@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.neogineer.geronimo.geronimosample.data.King;
@@ -62,5 +64,53 @@ public class MainActivity extends AppCompatActivity {
         kings.add(new King("The king of nothing", "Something else", R.drawable.sample_nothing));
 
         return kings;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_activity_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.menu_item_add:
+                onAddClicked();
+                return true;
+            case R.id.menu_item_remove:
+                onRemoveClicked();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /**
+     * Weird behavior: while reverse engineering com.geronimoagency.sample
+     * I noticed that '+' button has a weird behavior.
+     *      - When size is > 1 it adds The King Ragnar at position 1
+     *      - When size is 0 it adds King Ragnar at position 0
+     *      - When size is 1 :
+     *          - if it's the first time size is 1, it duplicates the element at position 0
+     *          - if it's not the first time, it behaves as if size was 0.
+     */
+    private boolean firstTime = true;
+    private void onAddClicked() {
+        int size = mAdapter.getItemCount();
+        King newKing = new King("The king Ragnar", "Vikings", R.drawable.sample_viking);
+
+        if (size == 1 && firstTime){
+            mAdapter.duplicateFirstElement();
+            firstTime = false;
+        }else if(size > 1)
+            mAdapter.add(1, newKing);
+        else    // size == 0 or 1
+            mAdapter.add(0, newKing);
+    }
+
+    private void onRemoveClicked() {
+        mAdapter.remove(0);
     }
 }

@@ -48,6 +48,38 @@ public class KingsAdapter extends RecyclerView.Adapter<KingsAdapter.ViewHolder> 
         return mKings.size();
     }
 
+    /**
+     * adds a king to the adapter's data set
+     * @param position at which to add
+     */
+    public void add(int position, King king){
+        if(mKings != null && mKings.size() >= position){
+            mKings.add(position, king);
+            notifyItemInserted(position);
+        }
+    }
+
+    /**
+     * removes the king at the specified position from
+     * the adapter's data set
+     */
+    public void remove(int position){
+        if(mKings != null && mKings.size() > position){
+            mKings.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
+
+    /**
+     * see Weird Behavior description at {@link MainActivity}
+     */
+    public void duplicateFirstElement() {
+        if(mKings.isEmpty())
+            throw new IllegalStateException("can't duplicate when it's empty");
+        mKings.add(0,mKings.get(0));
+        notifyItemInserted(0);
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
         ImageView image;
         TextView title;
