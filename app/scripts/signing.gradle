@@ -1,0 +1,29 @@
+// signing Release build with appropriate keystore (to be specified locally at keystore.properties)
+// NOTE: keystore.properties is confidential and should not be checked out to VCS (same for the .jks file).
+
+android {
+    signingConfigs {
+        release {
+            readKeystoreProperties()
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+        }
+    }
+}
+
+def readKeystoreProperties() {
+    def propsFile = rootProject.file('keystore.properties')
+    def configName = 'release'
+    if (propsFile.exists() && android.signingConfigs.hasProperty(configName)) {
+        def props = new Properties()
+        props.load(new FileInputStream(propsFile))
+        android.signingConfigs[configName].storeFile = file(props['storeFile'])
+        android.signingConfigs[configName].storePassword = props['storePassword']
+        android.signingConfigs[configName].keyAlias = props['keyAlias']
+        android.signingConfigs[configName].keyPassword = props['keyPassword']
+        println "===== read keystore properties success ====="
+    }
+}
