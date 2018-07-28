@@ -60,7 +60,17 @@
             card_view:layout_constraintLeft_toLeftOf="parent"
             card_view:layout_constraintRight_toRightOf="parent"
             card_view:layout_constraintTop_toBottomOf="@id/title"/>
-        
+
+        <TextView
+            android:id="@+id/id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="214"
+            style="@style/Base.TextAppearance.AppCompat.Widget.ActionBar.Menu"
+            card_view:layout_constraintLeft_toLeftOf="@id/desc"
+            card_view:layout_constraintTop_toBottomOf="@id/desc"
+            card_view:layout_constraintBottom_toBottomOf="parent"/>
+
         <Button
             android:id="@+id/details_button"
             android:layout_width="wrap_content"

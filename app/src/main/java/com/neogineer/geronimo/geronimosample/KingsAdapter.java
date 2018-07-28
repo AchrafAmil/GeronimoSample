@@ -1,5 +1,6 @@
 package com.neogineer.geronimo.geronimosample;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -35,12 +36,14 @@ public class KingsAdapter extends RecyclerView.Adapter<KingsAdapter.ViewHolder> 
         return new ViewHolder(v);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         King k = mKings.get(position);
         viewHolder.image.setBackgroundResource(k.getDrawable());
         viewHolder.title.setText(k.getTitle());
         viewHolder.desc.setText(k.getDesc());
+        viewHolder.id.setText("id: "+k.getId());
     }
 
     @Override
@@ -61,6 +64,7 @@ public class KingsAdapter extends RecyclerView.Adapter<KingsAdapter.ViewHolder> 
         ImageView image;
         TextView title;
         TextView desc;
+        TextView id;
         Button detailsButton;
         Button shareButton;
 
@@ -69,6 +73,7 @@ public class KingsAdapter extends RecyclerView.Adapter<KingsAdapter.ViewHolder> 
             image = itemView.findViewById(R.id.image);
             title = itemView.findViewById(R.id.title);
             desc = itemView.findViewById(R.id.desc);
+            id = itemView.findViewById(R.id.id);
 
             detailsButton = itemView.findViewById(R.id.details_button);
             detailsButton.setOnClickListener(v ->

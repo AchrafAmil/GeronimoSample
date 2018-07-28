@@ -17,7 +17,7 @@ import java.util.List;
 @Dao
 public interface KingDao {
 
-    @Query("SELECT * FROM king")
+    @Query("SELECT * FROM king ORDER BY id DESC")
     LiveData<List<King>> loadAllKings();
 
     @Insert

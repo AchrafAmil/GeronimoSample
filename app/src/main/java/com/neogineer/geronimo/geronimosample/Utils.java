@@ -17,12 +17,12 @@ public class Utils {
 
     public static List<King> getHardcodedList() {
         ArrayList<King> kings = new ArrayList<>();
-        kings.add(new King("The king Ragnar", "Vikings", R.drawable.sample_viking));
-        kings.add(new King("The king of the north", "Game of thrones", R.drawable.sample_got));
         kings.add(new King("The king of nothing", "Something else", R.drawable.sample_nothing));
-        kings.add(new King("The king Ragnar", "Vikings", R.drawable.sample_viking));
         kings.add(new King("The king of the north", "Game of thrones", R.drawable.sample_got));
+        kings.add(new King("The king Ragnar", "Vikings", R.drawable.sample_viking));
         kings.add(new King("The king of nothing", "Something else", R.drawable.sample_nothing));
+        kings.add(new King("The king of the north", "Game of thrones", R.drawable.sample_got));
+        kings.add(new King("The king Ragnar", "Vikings", R.drawable.sample_viking));
 
         return kings;
     }
