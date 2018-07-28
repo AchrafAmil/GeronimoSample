@@ -10,10 +10,9 @@ import android.util.Log;
 
 import com.neogineer.geronimo.geronimosample.AppExecutors;
 import com.neogineer.geronimo.geronimosample.MainActivity;
+import com.neogineer.geronimo.geronimosample.Utils;
 
 import java.util.List;
-
-import static com.neogineer.geronimo.geronimosample.MainActivity.getHardcodedList;
 
 /**
  * Created by AchrafAmil (@neogineer) on 28/07/2018.
@@ -37,7 +36,7 @@ public abstract class AppDatabase extends RoomDatabase{
                             public void onCreate(@NonNull SupportSQLiteDatabase db) {
                                 super.onCreate(db);
                                 AppExecutors.getInstance().diskIO().execute(() -> {
-                                    List<King> kingsToAdd = MainActivity.getHardcodedList();
+                                    List<King> kingsToAdd = Utils.getHardcodedList();
                                     getInstance(context).kingDao().insertAllKings( kingsToAdd.toArray(new King[kingsToAdd.size()]));
                                         });
                             }

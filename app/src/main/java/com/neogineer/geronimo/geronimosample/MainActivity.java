@@ -71,27 +71,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void insertHardcodedKings(){
-        List<King> kings = getHardcodedList();
+        List<King> kings = Utils.getHardcodedList();
         for(King king: kings){
             mDb.kingDao().insertKing(king);
         }
-    }
-
-    private King getRandomKing(){
-        List<King> kings = getHardcodedList();
-        return kings.get( (int) (Math.random()*kings.size()));
-    }
-
-    public static List<King> getHardcodedList() {
-        ArrayList<King> kings = new ArrayList<>();
-        kings.add(new King("The king Ragnar", "Vikings", R.drawable.sample_viking));
-        kings.add(new King("The king of the north", "Game of thrones", R.drawable.sample_got));
-        kings.add(new King("The king of nothing", "Something else", R.drawable.sample_nothing));
-        kings.add(new King("The king Ragnar", "Vikings", R.drawable.sample_viking));
-        kings.add(new King("The king of the north", "Game of thrones", R.drawable.sample_got));
-        kings.add(new King("The king of nothing", "Something else", R.drawable.sample_nothing));
-
-        return kings;
     }
 
     @Override
@@ -118,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
     private void onAddClicked() {
         AppExecutors.getInstance().diskIO().execute(() ->
                 mDb.kingDao().insertKing(
-                new King("The king Ragnar", "Vikings", R.drawable.sample_viking)));
+                        Utils.getRandomKing()));
     }
 
     private void onRemoveClicked() {

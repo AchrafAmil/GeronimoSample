@@ -57,16 +57,6 @@ public class KingsAdapter extends RecyclerView.Adapter<KingsAdapter.ViewHolder> 
         notifyDataSetChanged();
     }
 
-    /**
-     * see Weird Behavior description at {@link MainActivity}
-     */
-    public void duplicateFirstElement() {
-        if(mKings.isEmpty())
-            throw new IllegalStateException("can't duplicate when it's empty");
-        mKings.add(0,mKings.get(0));
-        notifyItemInserted(0);
-    }
-
     class ViewHolder extends RecyclerView.ViewHolder {
         ImageView image;
         TextView title;
