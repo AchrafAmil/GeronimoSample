@@ -38,36 +38,23 @@ public class KingsAdapter extends RecyclerView.Adapter<KingsAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         King k = mKings.get(position);
-        viewHolder.image.setBackgroundResource(k.drawable);
-        viewHolder.title.setText(k.title);
-        viewHolder.desc.setText(k.desc);
+        viewHolder.image.setBackgroundResource(k.getDrawable());
+        viewHolder.title.setText(k.getTitle());
+        viewHolder.desc.setText(k.getDesc());
     }
 
     @Override
     public int getItemCount() {
-        return mKings.size();
+        return mKings==null ? 0 : mKings.size();
     }
 
-    /**
-     * adds a king to the adapter's data set
-     * @param position at which to add
-     */
-    public void add(int position, King king){
-        if(mKings != null && mKings.size() >= position){
-            mKings.add(position, king);
-            notifyItemInserted(position);
-        }
+    List<King> getKings(){
+        return mKings;
     }
 
-    /**
-     * removes the king at the specified position from
-     * the adapter's data set
-     */
-    public void remove(int position){
-        if(mKings != null && mKings.size() > position){
-            mKings.remove(position);
-            notifyItemRemoved(position);
-        }
+    void setKings(List<King> kings){
+        this.mKings = kings;
+        notifyDataSetChanged();
     }
 
     /**
@@ -92,6 +79,7 @@ public class KingsAdapter extends RecyclerView.Adapter<KingsAdapter.ViewHolder> 
             image = itemView.findViewById(R.id.image);
             title = itemView.findViewById(R.id.title);
             desc = itemView.findViewById(R.id.desc);
+
             detailsButton = itemView.findViewById(R.id.details_button);
             detailsButton.setOnClickListener(v ->
                     mClickHandler.onDetailsClicked(mKings.get(getAdapterPosition())));

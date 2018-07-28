@@ -29,6 +29,8 @@ task clean(type: Delete) {
 ext{
     support_library_version = '27.1.1'
     constraint_version = '1.1.2'
+    room_version = '1.1.1'
+    lifecycle_version = '1.1.1'
 
     junit_version = '4.12'
     testing_support_library_version = '1.0.2'
