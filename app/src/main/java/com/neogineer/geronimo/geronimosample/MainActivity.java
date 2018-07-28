@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         return kings.get( (int) (Math.random()*kings.size()));
     }
 
-    private List<King> getHardcodedList() {
+    public static List<King> getHardcodedList() {
         ArrayList<King> kings = new ArrayList<>();
         kings.add(new King("The king Ragnar", "Vikings", R.drawable.sample_viking));
         kings.add(new King("The king of the north", "Game of thrones", R.drawable.sample_got));

@@ -1,10 +1,19 @@
 package com.neogineer.geronimo.geronimosample.data;
 
+import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Log;
+
+import com.neogineer.geronimo.geronimosample.AppExecutors;
+import com.neogineer.geronimo.geronimosample.MainActivity;
+
+import java.util.List;
+
+import static com.neogineer.geronimo.geronimosample.MainActivity.getHardcodedList;
 
 /**
  * Created by AchrafAmil (@neogineer) on 28/07/2018.
@@ -23,12 +32,24 @@ public abstract class AppDatabase extends RoomDatabase{
                 Log.d(LOG_TAG, "Creating new database instance");
                 sInstance = Room.databaseBuilder(context.getApplicationContext(),
                         AppDatabase.class, AppDatabase.DATABASE_NAME)
+                        .addCallback(new Callback() {
+                            @Override
+                            public void onCreate(@NonNull SupportSQLiteDatabase db) {
+                                super.onCreate(db);
+                                AppExecutors.getInstance().diskIO().execute(() -> {
+                                    List<King> kingsToAdd = MainActivity.getHardcodedList();
+                                    getInstance(context).kingDao().insertAllKings( kingsToAdd.toArray(new King[kingsToAdd.size()]));
+                                        });
+                            }
+                        })
                         .build();
             }
         }
         Log.d(LOG_TAG, "Getting the database instance");
         return sInstance;
     }
+
+
 
     public abstract KingDao kingDao();
 }

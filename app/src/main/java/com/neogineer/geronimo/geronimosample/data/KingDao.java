@@ -23,6 +23,9 @@ public interface KingDao {
     @Insert
     void insertKing(King king);
 
+    @Insert
+    void insertAllKings(King... kings);
+
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateKing(King king);
 
