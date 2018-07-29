@@ -1,5 +1,6 @@
 package com.neogineer.geronimo.geronimosample;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -35,55 +36,35 @@ public class KingsAdapter extends RecyclerView.Adapter<KingsAdapter.ViewHolder> 
         return new ViewHolder(v);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         King k = mKings.get(position);
-        viewHolder.image.setBackgroundResource(k.drawable);
-        viewHolder.title.setText(k.title);
-        viewHolder.desc.setText(k.desc);
+        viewHolder.image.setBackgroundResource(k.getDrawable());
+        viewHolder.title.setText(k.getTitle());
+        viewHolder.desc.setText(k.getDesc());
+        viewHolder.id.setText("id: "+k.getId());
     }
 
     @Override
     public int getItemCount() {
-        return mKings.size();
+        return mKings==null ? 0 : mKings.size();
     }
 
-    /**
-     * adds a king to the adapter's data set
-     * @param position at which to add
-     */
-    public void add(int position, King king){
-        if(mKings != null && mKings.size() >= position){
-            mKings.add(position, king);
-            notifyItemInserted(position);
-        }
+    List<King> getKings(){
+        return mKings;
     }
 
-    /**
-     * removes the king at the specified position from
-     * the adapter's data set
-     */
-    public void remove(int position){
-        if(mKings != null && mKings.size() > position){
-            mKings.remove(position);
-            notifyItemRemoved(position);
-        }
-    }
-
-    /**
-     * see Weird Behavior description at {@link MainActivity}
-     */
-    public void duplicateFirstElement() {
-        if(mKings.isEmpty())
-            throw new IllegalStateException("can't duplicate when it's empty");
-        mKings.add(0,mKings.get(0));
-        notifyItemInserted(0);
+    void setKings(List<King> kings){
+        this.mKings = kings;
+        notifyDataSetChanged();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
         ImageView image;
         TextView title;
         TextView desc;
+        TextView id;
         Button detailsButton;
         Button shareButton;
 
@@ -92,6 +73,8 @@ public class KingsAdapter extends RecyclerView.Adapter<KingsAdapter.ViewHolder> 
             image = itemView.findViewById(R.id.image);
             title = itemView.findViewById(R.id.title);
             desc = itemView.findViewById(R.id.desc);
+            id = itemView.findViewById(R.id.id);
+
             detailsButton = itemView.findViewById(R.id.details_button);
             detailsButton.setOnClickListener(v ->
                     mClickHandler.onDetailsClicked(mKings.get(getAdapterPosition())));

@@ -1,14 +1,17 @@
 package com.neogineer.geronimo.geronimosample;
 
+import android.arch.lifecycle.LiveData;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.neogineer.geronimo.geronimosample.data.AppDatabase;
 import com.neogineer.geronimo.geronimosample.data.King;
 
 import java.util.ArrayList;
@@ -19,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView mRecycler;
     KingsAdapter mAdapter;
     RecyclerView.LayoutManager mLayoutManager;
+    AppDatabase mDb;
 
     // behavior for King card buttons.
     private final OnButtonClickedListener mCardButtonsListener
@@ -43,6 +47,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         setupRecycler();
+
+        mDb = AppDatabase.getInstance(getApplicationContext());
+
+        loadKings();
     }
 
     private void setupRecycler() {
@@ -50,20 +58,23 @@ public class MainActivity extends AppCompatActivity {
         mRecycler.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         mRecycler.setLayoutManager(mLayoutManager);
-        mAdapter = new KingsAdapter(getHardcodedList(), mCardButtonsListener);
+        mAdapter = new KingsAdapter(null, mCardButtonsListener);
         mRecycler.setAdapter(mAdapter);
     }
 
-    private List<King> getHardcodedList() {
-        ArrayList<King> kings = new ArrayList<>();
-        kings.add(new King("The king Ragnar", "Vikings", R.drawable.sample_viking));
-        kings.add(new King("The king of the north", "Game of thrones", R.drawable.sample_got));
-        kings.add(new King("The king of nothing", "Something else", R.drawable.sample_nothing));
-        kings.add(new King("The king Ragnar", "Vikings", R.drawable.sample_viking));
-        kings.add(new King("The king of the north", "Game of thrones", R.drawable.sample_got));
-        kings.add(new King("The king of nothing", "Something else", R.drawable.sample_nothing));
+    private void loadKings(){
+        LiveData<List<King>> kings = mDb.kingDao().loadAllKings();
+        kings.observe(this, (entries) -> {
+            Log.d("MainActivity", "Receiving database update from LiveData");
+            mAdapter.setKings(entries);
+        });
+    }
 
-        return kings;
+    private void insertHardcodedKings(){
+        List<King> kings = Utils.getHardcodedList();
+        for(King king: kings){
+            mDb.kingDao().insertKing(king);
+        }
     }
 
     @Override
@@ -87,30 +98,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Weird behavior: while reverse engineering com.geronimoagency.sample
-     * I noticed that '+' button has a weird behavior.
-     *      - When size is > 1 it adds The King Ragnar at position 1
-     *      - When size is 0 it adds King Ragnar at position 0
-     *      - When size is 1 :
-     *          - if it's the first time size is 1, it duplicates the element at position 0
-     *          - if it's not the first time, it behaves as if size was 0.
-     */
-    private boolean firstTime = true;
     private void onAddClicked() {
-        int size = mAdapter.getItemCount();
-        King newKing = new King("The king Ragnar", "Vikings", R.drawable.sample_viking);
-
-        if (size == 1 && firstTime){
-            mAdapter.duplicateFirstElement();
-            firstTime = false;
-        }else if(size > 1)
-            mAdapter.add(1, newKing);
-        else    // size == 0 or 1
-            mAdapter.add(0, newKing);
+        AppExecutors.getInstance().diskIO().execute(() ->
+                mDb.kingDao().insertKing(
+                        Utils.getRandomKing()));
     }
 
     private void onRemoveClicked() {
-        mAdapter.remove(0);
+        if(mAdapter.getItemCount() > 0) {
+            King toBeRemoved = mAdapter.getKings().get(0);
+            AppExecutors.getInstance().diskIO().execute(() ->
+                    mDb.kingDao().deleteKing(toBeRemoved));
+        }
     }
 }
